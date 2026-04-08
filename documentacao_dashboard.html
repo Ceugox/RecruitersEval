@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Dashboard Métricas P&C</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pbi-blue: #1F3864;
+            --pbi-light: #3A73C0;
+            --looker-orange: #E65C00;
+            --looker-light: #FF8F00;
+            --success: #2E7D32;
+            --warning: #EF6C00;
+            --danger: #C62828;
+            --bg-gray: #F5F7FA;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--pbi-blue) 0%, #1a2a44 100%);
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #E2E8F0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .grid-kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 5px solid var(--pbi-light);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: var(--pbi-blue);
+        }
+
+        .kpi-looker {
+            border-left-color: var(--looker-orange);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #EDF2F7;
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--pbi-blue);
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #E2E8F0;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #F7FAFC;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-mapped { background-color: #C6F6D5; color: #22543D; }
+        .status-partial { background-color: #FEEBC8; color: #7B341E; }
+        .status-missing { background-color: #FED7D7; color: #822727; }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: #E2E8F0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--pbi-blue);
+            color: var(--white);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        code {
+            background: #F1F5F9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #C53030;
+        }
+
+        .metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            color: #E2E8F0;
+        }
+
+        .metadata-item span {
+            display: block;
+            font-weight: 600;
+            color: var(--white);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .grid-kpis { grid-template-columns: 1fr; }
+            .tabs { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Dashboard Métricas P&C</h1>
+        <p>Documentação Técnica e Dicionário de Dados – Hub R&S</p>
+        <div class="metadata">
+            <div class="metadata-item">
+                <span>Data de Referência</span>
+                Abril / 2026
+            </div>
+            <div class="metadata-item">
+                <span>Área Responsável</span>
+                Recursos Humanos – Recrutamento & Seleção
+            </div>
+            <div class="metadata-item">
+                <span>Implementações</span>
+                Power BI (.pbix) & Looker Studio
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2 class="section-title">Resumo Operacional</h2>
+        <p>Este dashboard centraliza o controle de tickets de Recrutamento & Seleção (R&S) da rede, permitindo o acompanhamento de performance, volumetria por marca e análise de SLAs operacionais e administrativos.</p>
+        <div style="margin-top: 1.5rem;">
+            <p><strong>Fonte de Dados:</strong> Google Sheets (via conector nativo)</p>
+            <p><strong>Frequência:</strong> Atualização programada e monitoramento de KPIs acumulados (YTD, MTD, WTD).</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Indicadores Principais (KPIs)</h2>
+    <div class="grid-kpis">
+        <div class="kpi-card">
+            <div class="kpi-label">Total de Tickets (2025+2026)</div>
+            <div class="kpi-value">3.562</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Vagas Fechadas (Geral)</div>
+            <div class="kpi-value">2.761</div>
+        </div>
+        <div class="kpi-card kpi-looker">
+            <div class="kpi-label">Vagas Fechadas (2025)</div>
+            <div class="kpi-value">2.120</div>
+        </div>
+        <div class="kpi-card kpi-looker">
+            <div class="kpi-label">Vagas Fechadas (2026 YTD)</div>
+            <div class="kpi-value">641</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'pbi-tab')">Power BI Model</button>
+            <button class="tab-btn" onclick="openTab(event, 'looker-tab')">Looker Studio Structure</button>
+            <button class="tab-btn" onclick="openTab(event, 'depara-tab')">Mapeamento De-Para</button>
+        </div>
+
+        <!-- Power BI Tab -->
+        <div id="pbi-tab" class="tab-content active">
+            <h3 style="margin-bottom: 1rem; color: var(--pbi-blue);">Tabelas e Medidas DAX</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tabela</th>
+                        <th>Tipo</th>
+                        <th>Principais Medidas / Lógica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fonte_Sheets</strong></td>
+                        <td>Fato / Transacional</td>
+                        <td>Tabela central com 3.562 registros. Contém ID do Ticket, Status, Cargo, Nível, Marca e Datas.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R&S_CONTROLE 2026</strong></td>
+                        <td>Calculada (DAX)</td>
+                        <td>
+                            <code>VagasFechadas</code>, <code>SLA_R&S_Médio</code>, <code>SLA_ADM_Médio</code>, 
+                            <code>VagasFechadasMTD</code>, <code>RankRecrutador</code>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>dCalendario</strong></td>
+                        <td>Dimensão Temporal</td>
+                        <td>Habilita drill-down de Ano, Mês e Hierarquia de Datas para análise de tendências.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Looker Tab -->
+        <div id="looker-tab" class="tab-content">
+            <h3 style="margin-bottom: 1rem; color: var(--looker-orange);">Visuais e Filtros (Looker)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Visual / Filtro</th>
+                        <th>Tipo</th>
+                        <th>Descrição / Valores</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MARCAS</strong></td>
+                        <td>Filtro Global</td>
+                        <td>Controle de seleção para 14 marcas (APOGEU, GLOBAL TREE, QI, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Volume de contratação</strong></td>
+                        <td>Gráfico Colunas</td>
+                        <td>Comparativo de Vagas Fechadas por Marca entre 2025 (azul) e 2026 (laranja).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tickets por nível</strong></td>
+                        <td>Gráfico Barras</td>
+                        <td>Distribuição por Nível (Operacional, Estágio, Pedagógico, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vagas por Recrutador</strong></td>
+                        <td>Gráfico Colunas</td>
+                        <td>Ranking visual de fechamento por consultor (RAYSSA, VIVIAN, LANNA, etc.)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- De-Para Tab -->
+        <div id="depara-tab" class="tab-content">
+            <h3 style="margin-bottom: 1rem; color: var(--success);">Equivalência entre Ferramentas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo Power BI</th>
+                        <th>Equivalente Looker</th>
+                        <th>Status</th>
+                        <th>Ação Recomendada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MARCA</td>
+                        <td>MARCAS</td>
+                        <td><span class="status-badge status-mapped">✅ Mapeado</span></td>
+                        <td>Manter padronização dos 14 nomes na fonte.</td>
+                    </tr>
+                    <tr>
+                        <td>VagasFechadas</td>
+                        <td>TOTAL VAGAS FECHADAS</td>
+                        <td><span class="status-badge status-mapped">✅ Mapeado</span></td>
+                        <td>Valores coincidem (2.761). Lógica de STATUS='Fechada'.</td>
+                    </tr>
+                    <tr>
+                        <td>SLA_R&S_Médio</td>
+                        <td>---</td>
+                        <td><span class="status-badge status-missing">❌ Sem equivalente</span></td>
+                        <td>Criar campo calculado <code>DATEDIFF</code> no Looker.</td>
+                    </tr>
+                    <tr>
+                        <td>UNIDADE / SETOR</td>
+                        <td>MARCA (Agregado)</td>
+                        <td><span class="status-badge status-partial">⚠️ Parcial</span></td>
+                        <td>Avaliar necessidade de drill-down por Unidade no Looker.</td>
+                    </tr>
+                    <tr>
+                        <td>CARGO</td>
+                        <td>NÍVEL</td>
+                        <td><span class="status-badge status-partial">⚠️ Parcial</span></td>
+                        <td>Alinhar se a análise deve ser nominal (Cargo) ou hierárquica (Nível).</td>
+                    </tr>
+                    <tr>
+                        <td>Aba Consulta</td>
+                        <td>---</td>
+                        <td><span class="status-badge status-missing">❌ Sem equivalente</span></td>
+                        <td>Criar página de tabela detalhada no Looker para auditoria.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-title">Próximos Passos</h2>
+        <ul style="margin-left: 1.5rem;">
+            <li><strong>Padronização de Nomes:</strong> Criar uma tabela de-para para nomes de recrutadores (evitar divergências por digitação).</li>
+            <li><strong>Gaps de SLA:</strong> Implementar o cálculo de SLA Médio (R&S e ADM) no Looker Studio para paridade total com o Power BI.</li>
+            <li><strong>Relatório de Detalhes:</strong> Construir a página de "Consulta" no Looker para permitir a extração individual de tickets.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>

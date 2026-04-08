@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raíz Educação — Comparativo R&S Q1 2025 × 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --verde-escuro:  #1A3A2A;
+    --verde-medio:   #2D6A4F;
+    --verde-claro:   #52B788;
+    --verde-menta:   #95D5B2;
+    --terra:         #8B5E3C;
+    --terra-claro:   #C49A6C;
+    --creme:         #FBF8F2;
+    --creme-escuro:  #F0EAD8;
+    --branco:        #FFFFFF;
+    --cinza-texto:   #2E2E2E;
+    --cinza-leve:    #7A7A7A;
+    /* ── Laranja marca Raíz Educação ── */
+    --laranja:       #F5A200;
+    --laranja-claro: #F7C04A;
+    --laranja-pale:  rgba(245,162,0,0.12);
+    --sombra:        rgba(26,58,42,0.11);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--creme);
+    color: var(--cinza-texto);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: .4;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: relative;
+    background: linear-gradient(150deg, #0F2318 0%, #1A3A2A 50%, #1E3822 75%, #2A1A00 100%);
+    overflow: hidden;
+  }
+  /* barra laranja embaixo do header */
+  .header::after {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde-claro) 0%, var(--laranja) 60%, var(--laranja-claro) 100%);
+  }
+  .header-leaves {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .header-leaves svg { position: absolute; opacity: .06; }
+  .header-inner {
+    position: relative; z-index: 2;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 2rem;
+    padding: 2rem 3rem;
+    max-width: 1400px; margin: 0 auto;
+  }
+  .logo-wrap {
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .logo-img {
+    height: 60px; width: auto;
+    /* mostra a logo em cores naturais (verde + laranja da marca) */
+    filter: brightness(1.1) drop-shadow(0 1px 4px rgba(0,0,0,.4));
+    transition: filter .3s, transform .3s;
+  }
+  .logo-img:hover { filter: brightness(1.25) drop-shadow(0 2px 8px rgba(245,162,0,.5)); transform: scale(1.04); }
+  .logo-fallback {
+    display: none;
+    height: 56px; width: 56px;
+  }
+  .header-title { text-align: center; color: var(--branco); }
+  .header-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700;
+  }
+  .header-title p {
+    font-size: .82rem; color: var(--verde-menta);
+    margin-top: 4px; letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .header-badge {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px; padding: .75rem 1.25rem;
+    color: var(--branco); text-align: right;
+  }
+  .header-badge .bl { font-size: .68rem; text-transform: uppercase; letter-spacing: 2px; color: var(--laranja-claro); }
+  .header-badge .bv { font-size: 1.05rem; font-weight: 600; margin-top: 2px; }
+
+  .period-bar {
+    background: linear-gradient(90deg, #1E4232 0%, #24502E 45%, #3A2200 100%);
+    padding: .65rem 3rem;
+    display: flex; align-items: center; gap: 2rem; justify-content: center;
+    border-top: 1px solid rgba(245,162,0,.15);
+  }
+  .period-item {
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .78rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--branco);
+  }
+  .period-item.p26 { color: var(--laranja-claro); }
+  .pdot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
+  .pdot.d25 { background: var(--verde-menta); }
+  .pdot.d26 { background: var(--laranja); box-shadow: 0 0 6px rgba(245,162,0,.7); }
+  .psep { color: rgba(255,255,255,.25); font-size: 1.1rem; }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 1400px; margin: 0 auto; padding: 2.5rem 2rem 4rem; position: relative; z-index: 1; }
+
+  /* ── SECTION LABEL ── */
+  .sec {
+    display: flex; align-items: center; gap: .75rem;
+    margin: 2.5rem 0 1.25rem;
+  }
+  .sec::before {
+    content: ''; display: block;
+    width: 4px; height: 22px;
+    background: linear-gradient(180deg, var(--laranja) 0%, var(--verde-claro) 100%);
+    border-radius: 2px;
+  }
+  .sec h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--verde-escuro); font-weight: 700;
+  }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 1.1rem; margin-bottom: 1.5rem;
+  }
+  .kpi-card {
+    background: var(--branco); border-radius: 16px; padding: 1.4rem 1.2rem;
+    box-shadow: 0 2px 16px var(--sombra); border: 1px solid rgba(45,106,79,.07);
+    position: relative; overflow: hidden;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+    animation: fadeUp .5s ease both;
+  }
+  .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(245,162,0,.18); border-color: rgba(245,162,0,.3); }
+  .kpi-card::after {
+    content: ''; position: absolute; top:0; left:0; right:0; height:3px; border-radius:16px 16px 0 0;
+  }
+  .kpi-card.g::after  { background: linear-gradient(90deg, var(--verde-medio), var(--verde-claro)); }
+  .kpi-card.o::after  { background: linear-gradient(90deg, var(--laranja), var(--laranja-claro)); }
+  .kpi-card.t::after  { background: linear-gradient(90deg, var(--terra), var(--terra-claro)); }
+  .kpi-card.b::after  { background: linear-gradient(90deg, #2B6CB0, #63B3ED); }
+  .kpi-card.r::after  { background: linear-gradient(90deg, #9B2335, #E05C72); }
+
+  .kpi-label { font-size: .7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--cinza-leve); font-weight: 500; margin-bottom: .5rem; }
+  .kpi-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; margin-bottom: .7rem; }
+  .kpi-year { background: var(--creme); border-radius: 10px; padding: .55rem .7rem; }
+  .kpi-year .yr { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .kpi-year.y25 { background: rgba(45,106,79,.07); }
+  .kpi-year.y25 .yr { color: var(--verde-medio); }
+  .kpi-year.y26 { background: rgba(245,162,0,.09); }
+  .kpi-year.y26 .yr { color: var(--laranja); }
+  .kpi-year .val { font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 700; line-height: 1.1; color: var(--cinza-texto); }
+  .kpi-delta { display: flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 600; }
+  .kpi-delta.up     { color: var(--verde-medio); }
+  .kpi-delta.down   { color: #C53030; }
+  .kpi-delta.neut   { color: var(--cinza-leve); }
+
+  /* ── CHART LAYOUTS ── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-bottom: 1.4rem; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.4rem; margin-bottom: 1.4rem; }
+  .gfull { margin-bottom: 1.4rem; }
+
+  .cc {
+    background: var(--branco); border-radius: 18px; padding: 1.6rem;
+    box-shadow: 0 2px 16px var(--sombra); border: 1px solid rgba(45,106,79,.06);
+    animation: fadeUp .5s ease both;
+  }
+  .ch { margin-bottom: 1.2rem; }
+  .ch h4 { font-family: 'Playfair Display', serif; font-size: .98rem; color: var(--verde-escuro); font-weight: 700; }
+  .ch p  { font-size: .73rem; color: var(--cinza-leve); margin-top: 2px; }
+
+  /* ── INSIGHTS ── */
+  .insights {
+    display: flex; flex-wrap: wrap; gap: .7rem;
+    margin-bottom: 2rem;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #0F2318 0%, #1A3A2A 50%, #2A1A00 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(245,162,0,.2);
+    box-shadow: 0 4px 24px rgba(245,162,0,.08);
+    animation: fadeUp .4s ease both;
+  }
+  .ins-label { font-size: .7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--laranja-claro); font-weight: 600; margin-bottom: .3rem; padding: 0 .2rem; width: 100%; }
+  .ins-chip {
+    background: rgba(245,162,0,.1); border: 1px solid rgba(245,162,0,.2);
+    border-radius: 20px; padding: .35rem .9rem;
+    font-size: .77rem; color: var(--branco);
+    display: flex; align-items: center; gap: .4rem;
+    transition: background .2s, border-color .2s;
+  }
+  .ins-chip:hover { background: rgba(245,162,0,.2); border-color: rgba(245,162,0,.4); }
+
+  /* ── TABLE ── */
+  .tc {
+    background: var(--branco); border-radius: 18px; padding: 1.6rem;
+    box-shadow: 0 2px 16px var(--sombra); border: 1px solid rgba(45,106,79,.06);
+    margin-bottom: 1.4rem; overflow-x: auto;
+    animation: fadeUp .5s ease both;
+  }
+  table { width:100%; border-collapse:collapse; font-size:.8rem; }
+  thead tr { background: linear-gradient(90deg, var(--verde-escuro) 0%, #2A1A00 100%); color: var(--branco); }
+  thead th { padding:.75rem 1rem; text-align:left; font-weight:600; letter-spacing:.4px; font-size:.72rem; text-transform:uppercase; }
+  thead th:first-child { border-radius:8px 0 0 8px; }
+  thead th:last-child  { border-radius:0 8px 8px 0; }
+  tbody tr { border-bottom: 1px solid var(--creme-escuro); transition: background .12s; }
+  tbody tr:hover { background: var(--creme); }
+  tbody td { padding:.65rem 1rem; }
+  .tdb { font-weight:600; color: var(--verde-escuro); }
+  .pill { display:inline-block; padding:.13rem .5rem; border-radius:20px; font-size:.7rem; font-weight:600; }
+  .pup   { background:rgba(45,106,79,.13); color:var(--verde-medio); }
+  .pdown { background:rgba(245,162,0,.15); color:#9A6500; }
+  .pflat { background:#E8F4FD; color:#2B6CB0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align:center; padding:2rem;
+    color:var(--cinza-leve); font-size:.73rem;
+    border-top: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--verde-claro), var(--laranja), var(--laranja-claro)) 1;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .kpi-card:nth-child(1){animation-delay:.05s} .kpi-card:nth-child(2){animation-delay:.10s}
+  .kpi-card:nth-child(3){animation-delay:.15s} .kpi-card:nth-child(4){animation-delay:.20s}
+  .kpi-card:nth-child(5){animation-delay:.25s} .kpi-card:nth-child(6){animation-delay:.30s}
+
+  @media(max-width:900px){
+    .header-inner{grid-template-columns:1fr;text-align:center;padding:1.5rem;}
+    .g2,.g3{grid-template-columns:1fr;}
+    .container{padding:1.5rem 1rem 3rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-leaves">
+    <svg width="440" height="440" style="top:-90px;right:-70px;">
+      <g fill="#95D5B2">
+        <ellipse cx="300" cy="120" rx="95" ry="42" transform="rotate(-30 300 120)"/>
+        <ellipse cx="360" cy="210" rx="72" ry="32" transform="rotate(22 360 210)"/>
+        <ellipse cx="240" cy="75"  rx="58" ry="24" transform="rotate(-60 240 75)"/>
+        <path d="M325 310 Q358 225 285 182 Q315 265 325 310Z"/>
+        <path d="M380 268 Q430 192 368 148 Q388 238 380 268Z"/>
+      </g>
+    </svg>
+    <svg width="280" height="280" style="bottom:-50px;left:-40px;">
+      <g fill="#52B788">
+        <ellipse cx="75"  cy="215" rx="72" ry="30" transform="rotate(25 75 215)"/>
+        <ellipse cx="128" cy="265" rx="52" ry="22" transform="rotate(-18 128 265)"/>
+        <path d="M55 145 Q25 198 88 228 Q68 182 55 145Z"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="header-inner">
+    <!-- LOGO REAL da empresa -->
+    <div class="logo-wrap">
+      <img
+        class="logo-img"
+        src="https://raizeducacao.com.br/wp-content/uploads/elementor/thumbs/Logo_raiz_cor-e1675346544702-qe0ca7t4c70mhicj191j3qq73v2pvx9y5w4fx5e3dc.png"
+        alt="Raíz Educação"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      >
+      <!-- Fallback SVG caso o logo não carregue -->
+      <svg class="logo-fallback" viewBox="0 0 58 58" fill="none">
+        <circle cx="29" cy="29" r="28" fill="#2D6A4F" stroke="#52B788" stroke-width="1.5"/>
+        <rect x="27" y="22" width="4" height="16" rx="2" fill="#95D5B2"/>
+        <path d="M29 38 Q20 43 16 49" stroke="#C49A6C" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M29 38 Q38 43 42 49" stroke="#C49A6C" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M29 41 Q29 46 29 51" stroke="#C49A6C" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <ellipse cx="22" cy="17" rx="8" ry="6"  fill="#52B788" opacity=".9" transform="rotate(-15 22 17)"/>
+        <ellipse cx="36" cy="15" rx="8" ry="6"  fill="#52B788" opacity=".9" transform="rotate(10 36 15)"/>
+        <ellipse cx="29" cy="12" rx="7" ry="5"  fill="#95D5B2" opacity=".9"/>
+      </svg>
+    </div>
+
+    <div class="header-title">
+      <h2>Comparativo R&amp;S — Q1 2025 × Q1 2026</h2>
+      <p>Janeiro · Fevereiro · Março &nbsp;|&nbsp; Recrutamento &amp; Seleção</p>
+    </div>
+
+    <div class="header-badge">
+      <div class="bl">Gerado em</div>
+      <div class="bv">Abril · 2026</div>
+    </div>
+  </div>
+
+  <div class="period-bar">
+    <div class="period-item"><span class="pdot d25"></span>2025 — Jan/Fev/Mar</div>
+    <span class="psep">|</span>
+    <div class="period-item p26"><span class="pdot d26"></span>2026 — Jan/Fev/Mar</div>
+    <span class="psep">|</span>
+    <div class="period-item" style="color:rgba(255,255,255,.45);font-weight:400;">Critério: Data de Fechamento da Vaga ≠ nulo</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- INSIGHTS -->
+  <div class="insights" style="margin-top:2rem;">
+    <div class="ins-label">Destaques do período</div>
+    <div class="ins-chip">📉 Vagas fechadas Q1: −20% (1.096 → 876)</div>
+    <div class="ins-chip">🌿 Global Tree +54%: 127 → 196 fechamentos</div>
+    <div class="ins-chip">⚡ Cubo Global School +151%: 39 → 98</div>
+    <div class="ins-chip">📉 Apogeu −67%: 234 → 77</div>
+    <div class="ins-chip">⏱ SLA R&S: +4,6 dias médios vs 2025</div>
+    <div class="ins-chip">✅ SLA ADM: −3,6 dias (melhora)</div>
+    <div class="ins-chip">🔄 Desligamento ↑50%: motivo dominante em 2026</div>
+    <div class="ins-chip">👤 Vitor e Mayara ausentes no quadro 2026</div>
+    <div class="ins-chip">📈 Março/26 superou Março/25: 288 vs 217 (+33%)</div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="sec"><h3>Indicadores-Chave — Q1 Comparativo</h3></div>
+  <div class="kpi-grid">
+
+    <div class="kpi-card g">
+      <div class="kpi-label">Vagas Fechadas · Q1</div>
+      <div class="kpi-compare">
+        <div class="kpi-year y25"><div class="yr">2025</div><div class="val">1.096</div></div>
+        <div class="kpi-year y26"><div class="yr">2026</div><div class="val">876</div></div>
+      </div>
+      <div class="kpi-delta down">▼ −220 vagas (−20,1%)</div>
+    </div>
+
+    <div class="kpi-card o">
+      <div class="kpi-label">SLA Médio R&S · Q1 (dias)</div>
+      <div class="kpi-compare">
+        <div class="kpi-year y25"><div class="yr">2025</div><div class="val">8,1d</div></div>
+        <div class="kpi-year y26"><div class="yr">2026</div><div class="val">12,7d</div></div>
+      </div>
+      <div class="kpi-delta down">▼ +4,6 dias (+57%) · mais lento</div>
+    </div>
+
+    <div class="kpi-card t">
+      <div class="kpi-label">SLA Médio ADM · Q1 (dias)</div>
+      <div class="kpi-compare">
+        <div class="kpi-year y25"><div class="yr">2025</div><div class="val">19,5d</div></div>
+        <div class="kpi-year y26"><div class="yr">2026</div><div class="val">15,9d</div></div>
+      </div>
+      <div class="kpi-delta up">▲ −3,6 dias (−18%) · melhora</div>
+    </div>
+
+    <div class="kpi-card b">
+      <div class="kpi-label">Vagas Abertas · Q1</div>
+      <div class="kpi-compare">
+        <div class="kpi-year y25"><div class="yr">2025</div><div class="val">1.240</div></div>
+        <div class="kpi-year y26"><div class="yr">2026</div><div class="val">948</div></div>
+      </div>
+      <div class="kpi-delta down">▼ −292 aberturas (−23,5%)</div>
+    </div>
+
+    <div class="kpi-card g">
+      <div class="kpi-label">Melhor Mês · Fechamentos</div>
+      <div class="kpi-compare">
+        <div class="kpi-year y25"><div class="yr">2025</div><div class="val">Jan</div></div>
+        <div class="kpi-year y26"><div class="yr">2026</div><div class="val">Fev</div></div>
+      </div>
+      <div class="kpi-delta up">▲ Jan/25: 450 &nbsp;|&nbsp; Fev/26: 320</div>
+    </div>
+
+    <div class="kpi-card r">
+      <div class="kpi-label">Taxa de Fechamento · YTD</div>
+      <div class="kpi-compare">
+        <div class="kpi-year y25"><div class="yr">2025</div><div class="val">87,7%</div></div>
+        <div class="kpi-year y26"><div class="yr">2026</div><div class="val">81,4%</div></div>
+      </div>
+      <div class="kpi-delta down">▼ −6,3 pp vs 2025</div>
+    </div>
+
+  </div>
+
+  <!-- FECHAMENTOS POR MÊS -->
+  <div class="sec"><h3>Volume de Fechamento Mensal</h3></div>
+  <div class="g2">
+    <div class="cc">
+      <div class="ch"><h4>Vagas Fechadas por Mês — Q1</h4><p>Contagem por data de fechamento da vaga</p></div>
+      <canvas id="cVagasMes" height="220"></canvas>
+    </div>
+    <div class="cc">
+      <div class="ch"><h4>Abertura × Fechamento por Mês</h4><p>Volume de tickets abertos vs vagas efetivamente fechadas</p></div>
+      <canvas id="cAbertura" height="220"></canvas>
+    </div>
+  </div>
+
+  <!-- SLA -->
+  <div class="sec"><h3>SLA — Tempo de Ciclo (dias)</h3></div>
+  <div class="g2">
+    <div class="cc">
+      <div class="ch"><h4>SLA R&S Médio por Mês</h4><p>Tempo de recrutamento até aceite da proposta · 2025 vs 2026</p></div>
+      <canvas id="cSlaRS" height="220"></canvas>
+    </div>
+    <div class="cc">
+      <div class="ch"><h4>SLA ADM Médio por Mês</h4><p>Tempo de admissão após aceite · 2025 vs 2026</p></div>
+      <canvas id="cSlaADM" height="220"></canvas>
+    </div>
+  </div>
+
+  <!-- POR MARCA -->
+  <div class="sec"><h3>Desempenho por Marca</h3></div>
+  <div class="gfull">
+    <div class="cc">
+      <div class="ch"><h4>Vagas Fechadas Q1 — por Marca (total Jan+Fev+Mar)</h4><p>2025 vs 2026 — ordenado por volume 2025</p></div>
+      <canvas id="cMarca" height="155"></canvas>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="cc">
+      <div class="ch"><h4>Janeiro — por Marca</h4><p>2025 vs 2026</p></div>
+      <canvas id="cJan" height="270"></canvas>
+    </div>
+    <div class="cc">
+      <div class="ch"><h4>Fevereiro — por Marca</h4><p>2025 vs 2026</p></div>
+      <canvas id="cFev" height="270"></canvas>
+    </div>
+    <div class="cc">
+      <div class="ch"><h4>Março — por Marca</h4><p>2025 vs 2026</p></div>
+      <canvas id="cMar" height="270"></canvas>
+    </div>
+  </div>
+
+  <!-- MOTIVOS -->
+  <div class="sec"><h3>Motivo de Abertura das Vagas</h3></div>
+  <div class="g2">
+    <div class="cc">
+      <div class="ch"><h4>Principal Motivo — Q1 2025</h4><p>Por data de fechamento no trimestre</p></div>
+      <canvas id="cMotivo25" height="240"></canvas>
+    </div>
+    <div class="cc">
+      <div class="ch"><h4>Principal Motivo — Q1 2026</h4><p>Por data de fechamento no trimestre</p></div>
+      <canvas id="cMotivo26" height="240"></canvas>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="sec"><h3>Pipeline de Vagas — Distribuição de Status</h3></div>
+  <div class="g2">
+    <div class="cc">
+      <div class="ch"><h4>Status Geral — 2025 (ano completo)</h4><p>Total de 2.819 vagas · fechadas = data preenchida</p></div>
+      <div style="max-width:320px;margin:0 auto;"><canvas id="cStatus25" height="240"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ch"><h4>Status Geral — 2026 (YTD)</h4><p>Total de 1.353 vagas · fechadas = data preenchida</p></div>
+      <div style="max-width:320px;margin:0 auto;"><canvas id="cStatus26" height="240"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABELA MARCA -->
+  <div class="sec"><h3>Tabela Detalhada — Vagas Fechadas por Marca e Mês</h3></div>
+  <div class="tc">
+    <div class="ch" style="margin-bottom:1rem;">
+      <h4>Fechamentos Q1 2025 × Q1 2026 — por Marca</h4>
+      <p>Critério: DATA DE FECHAMENTO DA VAGA não nula · ordenado por Q1 2025</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Marca</th>
+          <th>Jan/25</th><th>Fev/25</th><th>Mar/25</th><th>Q1 2025</th>
+          <th>Jan/26</th><th>Fev/26</th><th>Mar/26</th><th>Q1 2026</th>
+          <th>Δ Abs.</th><th>Δ %</th>
+        </tr>
+      </thead>
+      <tbody id="tMarca"></tbody>
+    </table>
+  </div>
+
+  <!-- TABELA CONSULTOR -->
+  <div class="sec"><h3>Performance por Consultor de R&S — Q1</h3></div>
+  <div class="tc">
+    <div class="ch" style="margin-bottom:1rem;">
+      <h4>SLA Médio (dias) e Volume de Fechamentos por Consultor</h4>
+      <p>Calculado sobre vagas com data de fechamento no mês</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Consultor</th><th>Ano</th>
+          <th>Jan — SLA R&S</th><th>Jan — SLA ADM</th>
+          <th>Fev — SLA R&S</th><th>Fev — SLA ADM</th>
+          <th>Mar — SLA R&S</th><th>Mar — SLA ADM</th>
+          <th>Q1 Fechadas</th>
+        </tr>
+      </thead>
+      <tbody id="tConsultor"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer class="footer">
+  Raíz Educação · Departamento de Pessoas &amp; Cultura &nbsp;|&nbsp;
+  Fonte: R&amp;S_CONTROLE DE VAGAS 2025 e 2026 &nbsp;|&nbsp;
+  Critério de fechamento: DATA DE FECHAMENTO DA VAGA ≠ nulo &nbsp;|&nbsp;
+  Gerado automaticamente — Abril 2026
+</footer>
+
+<script>
+// ═══════════════════════ DADOS CORRIGIDOS ═══════════════════════
+// Lógica: vaga fechada quando DATA DE FECHAMENTO não nula
+// Mês = mês da data de fechamento
+
+const MESES = ['Janeiro','Fevereiro','Março'];
+
+// Vagas com data de fechamento preenchida, por mês de fechamento
+const fechadas = {
+  '2025': [450, 429, 217],  // Q1 = 1.096
+  '2026': [268, 320, 288]   // Q1 = 876
+};
+
+// Vagas abertas (DATA ABERTURA), por mês
+const abertas = {
+  '2025': [513, 472, 255],  // Q1 = 1.240
+  '2026': [326, 361, 261]   // Q1 = 948
+};
+
+// SLA médio (dias) — vagas com data de fechamento no mês
+const slaRS = {
+  '2025': [8.7,  5.8,  11.3],
+  '2026': [14.7, 10.2, 13.6]
+};
+const slaADM = {
+  '2025': [17.5, 22.8, 17.1],
+  '2026': [16.5, 16.7, 14.6]
+};
+
+// Por marca — [Jan, Fev, Mar]
+const marcas = [
+  'APOGEU','MATRIZ EDUCAÇÃO','GLOBAL TREE','QI','CLV',
+  'CUBO GLOBAL SCHOOL','AMERICANO','UNIÃO','UNIFICADO',
+  'RAIZ EDUCACAO','SARAH DAWSEY','SÁ PEREIRA','BOM TEMPO','SAP'
+];
+const dadosMarca = {
+  'APOGEU':            { '2025': [77, 107, 50],  '2026': [29, 30, 18] },
+  'MATRIZ EDUCAÇÃO':   { '2025': [66,  68, 40],  '2026': [22, 65, 60] },
+  'GLOBAL TREE':       { '2025': [34,  62, 31],  '2026': [62, 63, 71] },
+  'QI':                { '2025': [51,  49, 30],  '2026': [32, 38, 35] },
+  'CLV':               { '2025': [59,  30, 17],  '2026': [22, 24, 26] },
+  'CUBO GLOBAL SCHOOL':{ '2025': [14,  16,  9],  '2026': [68, 17, 13] },
+  'AMERICANO':         { '2025': [59,  15,  5],  '2026': [ 5, 15,  7] },
+  'UNIÃO':             { '2025': [30,  10,  3],  '2026': [ 1,  4,  5] },
+  'UNIFICADO':         { '2025': [17,  12,  4],  '2026': [ 4, 14,  2] },
+  'RAIZ EDUCACAO':     { '2025': [17,  12, 12],  '2026': [ 6,  9, 17] },
+  'SARAH DAWSEY':      { '2025': [16,  12,  5],  '2026': [11,  7,  6] },
+  'SÁ PEREIRA':        { '2025': [ 1,  15,  8],  '2026': [ 1, 11, 10] },
+  'BOM TEMPO':         { '2025': [ 1,  13,  3],  '2026': [ 2, 13,  8] },
+  'SAP':               { '2025': [ 8,   8,  0],  '2026': [ 3, 10, 10] }
+};
+
+// Motivos Q1 (soma Jan+Fev+Mar por fechamento)
+const motivosQ1 = {
+  '2025': {
+    'DESLIGAMENTO':      387,
+    'AUMENTO DE QUADRO': 299,
+    'NOVA UNIDADE':      121,
+    'AUMENTO DE EQUIPE':  71,
+    'NOVA DIRETORIA':     34,
+    'REESTRUTURAÇÃO':     30,
+    'Outros':             154
+  },
+  '2026': {
+    'DESLIGAMENTO':      579,
+    'AUMENTO DE QUADRO':  94,
+    'NOVA UNIDADE':       74,
+    'REESTRUTURAÇÃO':     30,
+    'AUMENTO DE EQUIPE':  16,
+    'ABERTURA DE TURMA':  12,
+    'Outros':              71
+  }
+};
+
+// Consultores
+const consultores = [
+  { nome:'MAYARA',        ano:'2025', j_rs:3.2,  j_ad:18.9, f_rs:2.4,  f_ad:20.5, m_rs:2.1,  m_ad:16.4, tot:296 },
+  { nome:'VITOR',         ano:'2025', j_rs:13.0, j_ad:17.8, f_rs:4.4,  f_ad:23.0, m_rs:8.2,  m_ad:16.4, tot:342 },
+  { nome:'RAYSSA',        ano:'2025', j_rs:5.2,  j_ad:19.3, f_rs:4.2,  f_ad:24.3, m_rs:12.1, m_ad:18.0, tot:202 },
+  { nome:'VIVIAN',        ano:'2025', j_rs:7.9,  j_ad:14.6, f_rs:7.7,  f_ad:14.2, m_rs:10.3, m_ad:19.9, tot:163 },
+  { nome:'LANNA',         ano:'2025', j_rs:34.2, j_ad:9.7,  f_rs:22.3, f_ad:44.7, m_rs:46.6, m_ad:14.7, tot:74  },
+  { nome:'RAYSSA COSTA',  ano:'2026', j_rs:23.9, j_ad:10.4, f_rs:9.0,  f_ad:17.4, m_rs:11.6, m_ad:15.4, tot:364 },
+  { nome:'VIVIAN LINO',   ano:'2026', j_rs:12.6, j_ad:17.1, f_rs:9.4,  f_ad:15.4, m_rs:12.9, m_ad:13.7, tot:323 },
+  { nome:'LUCAS FRAZAO',  ano:'2026', j_rs:8.2,  j_ad:21.3, f_rs:17.4, f_ad:16.7, m_rs:null, m_ad:null, tot:85  },
+  { nome:'LANNA',         ano:'2026', j_rs:18.6, j_ad:14.9, f_rs:19.8, f_ad:13.4, m_rs:24.3, m_ad:13.8, tot:72  },
+  { nome:'LUCAS OLIVEIRA',ano:'2026', j_rs:null, j_ad:null, f_rs:4.0,  f_ad:39.3, m_rs:22.1, m_ad:14.0, tot:32  }
+];
+
+// ═══════════════════════ CORES & HELPERS ═══════════════════════
+const C25   = '#2D6A4F', C25a = 'rgba(45,106,79,0.16)';
+const C26   = '#F5A200', C26a = 'rgba(245,162,0,0.15)';
+const GRID  = 'rgba(0,0,0,0.055)';
+const TICK  = '#7A7A7A';
+const sum   = arr => arr.reduce((a,b)=>a+b,0);
+const fmt   = v => v == null ? '—' : v.toFixed(1)+'d';
+const pct   = (a,b) => b > 0 ? ((a-b)/b*100) : 0;
+
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = TICK;
+
+function pillHtml(p){
+  const cls = p > 5 ? 'pup' : p < -5 ? 'pdown' : 'pflat';
+  return `<span class="pill ${cls}">${p>0?'+':''}${p.toFixed(0)}%</span>`;
+}
+
+const BASE_OPTS = {
+  responsive: true,
+  plugins: { legend: { position:'top', labels:{ boxWidth:12, padding:14 } } },
+  scales: {
+    x: { grid:{ color:GRID } },
+    y: { grid:{ color:GRID }, beginAtZero:true }
+  }
+};
+
+// ═══════════════════════ CHART 1 — Fechadas × Mês ═══════════════════════
+new Chart('cVagasMes', {
+  type:'bar',
+  data: {
+    labels: MESES,
+    datasets: [
+      { label:'2025', data:fechadas['2025'], backgroundColor:C25, borderRadius:6, barPercentage:.55 },
+      { label:'2026', data:fechadas['2026'], backgroundColor:C26, borderRadius:6, barPercentage:.55 }
+    ]
+  },
+  options: {
+    ...BASE_OPTS,
+    plugins: {
+      ...BASE_OPTS.plugins,
+      tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: ${c.raw} vagas` } }
+    }
+  }
+});
+
+// ═══════════════════════ CHART 2 — Abertura × Fechamento ════════════════
+new Chart('cAbertura', {
+  type:'bar',
+  data: {
+    labels: ['Jan/25','Fev/25','Mar/25','Jan/26','Fev/26','Mar/26'],
+    datasets: [
+      {
+        label:'Abertas',
+        data: [...abertas['2025'], ...abertas['2026']],
+        backgroundColor: ['rgba(45,106,79,.28)','rgba(45,106,79,.28)','rgba(45,106,79,.28)',
+                          'rgba(245,162,0,.28)','rgba(245,162,0,.28)','rgba(245,162,0,.28)'],
+        borderRadius:5, barPercentage:.55
+      },
+      {
+        label:'Fechadas',
+        data: [...fechadas['2025'], ...fechadas['2026']],
+        backgroundColor: [C25, C25, C25, C26, C26, C26],
+        borderRadius:5, barPercentage:.55
+      }
+    ]
+  },
+  options: {
+    ...BASE_OPTS,
+    plugins: {
+      ...BASE_OPTS.plugins,
+      tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: ${c.raw}` } }
+    }
+  }
+});
+
+// ═══════════════════════ CHART 3 — SLA R&S ══════════════════════════════
+new Chart('cSlaRS', {
+  type:'line',
+  data: {
+    labels: MESES,
+    datasets: [
+      { label:'SLA R&S 2025', data:slaRS['2025'], borderColor:C25, backgroundColor:C25a, tension:.4, pointRadius:6, fill:true, borderWidth:2.5 },
+      { label:'SLA R&S 2026', data:slaRS['2026'], borderColor:C26, backgroundColor:C26a, tension:.4, pointRadius:6, fill:true, borderWidth:2.5 }
+    ]
+  },
+  options: {
+    ...BASE_OPTS,
+    plugins: { ...BASE_OPTS.plugins, tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: ${c.raw}d` } } },
+    scales: { x:BASE_OPTS.scales.x, y:{ ...BASE_OPTS.scales.y, ticks:{ callback:v=>v+'d' } } }
+  }
+});
+
+// ═══════════════════════ CHART 4 — SLA ADM ══════════════════════════════
+new Chart('cSlaADM', {
+  type:'line',
+  data: {
+    labels: MESES,
+    datasets: [
+      { label:'SLA ADM 2025', data:slaADM['2025'], borderColor:C25, backgroundColor:C25a, tension:.4, pointRadius:6, fill:true, borderWidth:2.5 },
+      { label:'SLA ADM 2026', data:slaADM['2026'], borderColor:C26, backgroundColor:C26a, tension:.4, pointRadius:6, fill:true, borderWidth:2.5 }
+    ]
+  },
+  options: {
+    ...BASE_OPTS,
+    plugins: { ...BASE_OPTS.plugins, tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: ${c.raw}d` } } },
+    scales: { x:BASE_OPTS.scales.x, y:{ ...BASE_OPTS.scales.y, min:10, ticks:{ callback:v=>v+'d' } } }
+  }
+});
+
+// ═══════════════════════ CHART 5 — Marca Q1 ═════════════════════════════
+const sorted = [...marcas].sort((a,b) => sum(dadosMarca[b]['2025']) - sum(dadosMarca[a]['2025']));
+new Chart('cMarca', {
+  type:'bar',
+  data: {
+    labels: sorted,
+    datasets: [
+      { label:'Q1 2025', data:sorted.map(m=>sum(dadosMarca[m]['2025'])), backgroundColor:C25, borderRadius:5, barPercentage:.65 },
+      { label:'Q1 2026', data:sorted.map(m=>sum(dadosMarca[m]['2026'])), backgroundColor:C26, borderRadius:5, barPercentage:.65 }
+    ]
+  },
+  options: BASE_OPTS
+});
+
+// ═══════════════════════ CHARTS 6/7/8 — Por Mês × Marca ═════════════════
+function marcaHBar(id, idx){
+  const d25 = sorted.map(m => dadosMarca[m]['2025'][idx]);
+  const d26 = sorted.map(m => dadosMarca[m]['2026'][idx]);
+  new Chart(id, {
+    type:'bar',
+    data: {
+      labels: sorted,
+      datasets: [
+        { label:'2025', data:d25, backgroundColor:C25+'CC', borderRadius:4, barPercentage:.6 },
+        { label:'2026', data:d26, backgroundColor:C26+'CC', borderRadius:4, barPercentage:.6 }
+      ]
+    },
+    options: {
+      indexAxis:'y', responsive:true,
+      plugins:{ legend:{ position:'top', labels:{ boxWidth:12, padding:12 } } },
+      scales:{
+        x:{ grid:{ color:GRID }, beginAtZero:true },
+        y:{ grid:{ color:GRID }, ticks:{ font:{ size:10 } } }
+      }
+    }
+  });
+}
+marcaHBar('cJan', 0);
+marcaHBar('cFev', 1);
+marcaHBar('cMar', 2);
+
+// ═══════════════════════ CHARTS MOTIVOS ═════════════════════════════════
+function motivoDonut(id, data, is2026){
+  const labels = Object.keys(data);
+  const vals   = Object.values(data);
+  const colors = is2026
+    ? ['#F5A200','#2D6A4F','#F7C04A','#52B788','#2B6CB0','#C49A6C','#95D5B2']
+    : ['#2D6A4F','#F5A200','#52B788','#C49A6C','#2B6CB0','#9B2335','#95D5B2'];
+  new Chart(id, {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data:vals, backgroundColor:colors, borderWidth:2, borderColor:'#fff', hoverOffset:8 }] },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{ position:'right', labels:{ font:{ size:11 }, padding:10 } },
+        tooltip:{ callbacks:{ label:c=>{
+          const t = c.dataset.data.reduce((a,b)=>a+b,0);
+          return ` ${c.label}: ${c.raw} (${((c.raw/t)*100).toFixed(1)}%)`;
+        }}}
+      },
+      cutout:'60%'
+    }
+  });
+}
+motivoDonut('cMotivo25', motivosQ1['2025'], false);
+motivoDonut('cMotivo26', motivosQ1['2026'], true);
+
+// ═══════════════════════ CHARTS STATUS ══════════════════════════════════
+// 2025 — paleta verde-liderada
+new Chart('cStatus25', {
+  type:'doughnut',
+  data:{ labels:['Com data fechamento','Cancelada','Desistente','Congelada'],
+         datasets:[{ data:[2472,445,207,45], backgroundColor:['#2D6A4F','#F5A200','#C49A6C','#95D5B2'], borderWidth:2, borderColor:'#fff', hoverOffset:8 }] },
+  options:{ responsive:true, plugins:{ legend:{ position:'right', labels:{ font:{size:11}, padding:10 } },
+    tooltip:{ callbacks:{ label:c=>{ const t=c.dataset.data.reduce((a,b)=>a+b,0); return ` ${c.label}: ${c.raw} (${((c.raw/t)*100).toFixed(1)}%)`; } } } }, cutout:'60%' }
+});
+// 2026 — laranja em destaque
+new Chart('cStatus26', {
+  type:'doughnut',
+  data:{ labels:['Com data fechamento','Cancelada','Desistente','Em andamento'],
+         datasets:[{ data:[1102,174,86,191], backgroundColor:['#F5A200','#2D6A4F','#C49A6C','#95D5B2'], borderWidth:2, borderColor:'#fff', hoverOffset:8 }] },
+  options:{ responsive:true, plugins:{ legend:{ position:'right', labels:{ font:{size:11}, padding:10 } },
+    tooltip:{ callbacks:{ label:c=>{ const t=c.dataset.data.reduce((a,b)=>a+b,0); return ` ${c.label}: ${c.raw} (${((c.raw/t)*100).toFixed(1)}%)`; } } } }, cutout:'60%' }
+});
+
+// ═══════════════════════ TABELA MARCA ═══════════════════════════════════
+const tbody = document.getElementById('tMarca');
+sorted.forEach(marca => {
+  const d25 = dadosMarca[marca]['2025'];
+  const d26 = dadosMarca[marca]['2026'];
+  const t25 = sum(d25), t26 = sum(d26);
+  const delta = t26 - t25;
+  const p = pct(t26, t25);
+  tbody.innerHTML += `
+    <tr>
+      <td class="tdb">${marca}</td>
+      <td>${d25[0]}</td><td>${d25[1]}</td><td>${d25[2]}</td>
+      <td><strong>${t25}</strong></td>
+      <td>${d26[0]}</td><td>${d26[1]}</td><td>${d26[2]}</td>
+      <td><strong>${t26}</strong></td>
+      <td>${delta>0?'+':''}${delta}</td>
+      <td>${pillHtml(p)}</td>
+    </tr>`;
+});
+// Totals row
+const tot25 = sorted.reduce((s,m)=>s+sum(dadosMarca[m]['2025']),0);
+const tot26 = sorted.reduce((s,m)=>s+sum(dadosMarca[m]['2026']),0);
+const jt25  = sorted.reduce((s,m)=>s+dadosMarca[m]['2025'][0],0);
+const ft25  = sorted.reduce((s,m)=>s+dadosMarca[m]['2025'][1],0);
+const mt25  = sorted.reduce((s,m)=>s+dadosMarca[m]['2025'][2],0);
+const jt26  = sorted.reduce((s,m)=>s+dadosMarca[m]['2026'][0],0);
+const ft26  = sorted.reduce((s,m)=>s+dadosMarca[m]['2026'][1],0);
+const mt26  = sorted.reduce((s,m)=>s+dadosMarca[m]['2026'][2],0);
+tbody.innerHTML += `
+  <tr style="background:var(--creme);font-weight:700;">
+    <td class="tdb">TOTAL</td>
+    <td>${jt25}</td><td>${ft25}</td><td>${mt25}</td><td><strong>${tot25}</strong></td>
+    <td>${jt26}</td><td>${ft26}</td><td>${mt26}</td><td><strong>${tot26}</strong></td>
+    <td>${tot26-tot25>0?'+':''}${tot26-tot25}</td>
+    <td>${pillHtml(pct(tot26,tot25))}</td>
+  </tr>`;
+
+// ═══════════════════════ TABELA CONSULTOR ═══════════════════════════════
+const tcBody = document.getElementById('tConsultor');
+consultores.forEach(c => {
+  const ac = c.ano === '2025' ? C25 : C26;
+  tcBody.innerHTML += `
+    <tr>
+      <td class="tdb">${c.nome}</td>
+      <td><span style="background:${ac}22;color:${ac};padding:.13rem .5rem;border-radius:20px;font-size:.7rem;font-weight:700;">${c.ano}</span></td>
+      <td>${fmt(c.j_rs)}</td><td>${fmt(c.j_ad)}</td>
+      <td>${fmt(c.f_rs)}</td><td>${fmt(c.f_ad)}</td>
+      <td>${fmt(c.m_rs)}</td><td>${fmt(c.m_ad)}</td>
+      <td><strong>${c.tot}</strong></td>
+    </tr>`;
+});
+</script>
+</body>
+</html>

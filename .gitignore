@@ -1,0 +1,13 @@
+# Dados sensíveis — NÃO subir ao GitHub
+*.xlsx
+*.xls
+*.pbix
+*.csv
+
+# Configurações locais do Claude
+.claude/
+
+# Sistema
+Thumbs.db
+.DS_Store
+desktop.ini
