@@ -1,0 +1,3 @@
+# Sem dependências externas — tudo stdlib Python 3.
+# sheets_reader.py usa urllib + csv
+# email_sender.py usa urllib + json

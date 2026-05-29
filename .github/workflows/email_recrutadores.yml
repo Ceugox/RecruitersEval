@@ -1,0 +1,60 @@
+name: Email Recrutadores
+
+on:
+  schedule:
+    # Quarta-feira 09:00 BRT (UTC-3 = 12:00 UTC)
+    - cron: "0 12 * * 3"
+    # Sexta-feira 16:00 BRT (UTC-3 = 19:00 UTC)
+    - cron: "0 19 * * 5"
+
+  # Disparo manual pelo GitHub (Actions > Email Recrutadores > Run workflow)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (não envia e-mail, só imprime)"
+        type: boolean
+        default: false
+      recrutador:
+        description: "Enviar apenas para este recrutador (vazio = todos)"
+        type: string
+        default: ""
+      test_email:
+        description: "Redirecionar todos para este e-mail de teste (vazio = desativado)"
+        type: string
+        default: ""
+
+jobs:
+  send-emails:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run script
+        working-directory: Scripts/email_recrutadores
+        env:
+          APPS_SCRIPT_TOKEN: ${{ secrets.APPS_SCRIPT_TOKEN }}
+          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: |
+          ARGS=""
+
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+
+          if [ -n "${{ github.event.inputs.recrutador }}" ]; then
+            ARGS="$ARGS --recrutador '${{ github.event.inputs.recrutador }}'"
+          fi
+
+          if [ -n "${{ github.event.inputs.test_email }}" ]; then
+            ARGS="$ARGS --test ${{ github.event.inputs.test_email }}"
+          fi
+
+          python main.py $ARGS
