@@ -9,9 +9,10 @@ from datetime import date
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.normpath(os.path.join(BASE_DIR, "..", ".."))
+ASSETS_DIR = os.path.join(ROOT_DIR, "Assets")
 
-IMG_HEADER = os.path.join(ROOT_DIR, "unnamed.png")
-IMG_FOOTER = os.path.join(ROOT_DIR, "unnamed (1).png")
+IMG_HEADER = os.path.join(ASSETS_DIR, "email_header.png")
+IMG_FOOTER = os.path.join(ASSETS_DIR, "email_footer.png")
 
 CID_HEADER = "header_raiz"
 CID_FOOTER = "footer_raiz"
