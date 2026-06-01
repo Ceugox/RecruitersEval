@@ -166,54 +166,81 @@ def _tabela_mes_html(resumo_mes: list[dict], primeiro_nome_atual: str) -> str:
 </table>"""
 
 
-# ── Pool de mensagens variadas (fallback quando IA não está configurada) ───────
-_POOL_ELOGIO_TOP = [
-    ("Isso é resultado! É {dia} e você fechou {vagas} vagas — {percentual}% da meta, "
-     "{extra}meta batida com {diff_semana} em relação à semana passada.\n"
-     "A Raíz tem muito orgulho de ter você no time — continue assim!"),
-    ("Que semana hein, {nome}! {vagas} vagas fechadas, {percentual}% da meta. "
-     "Você está {diff_semana} em relação à semana passada.\n"
-     "Meta batida e o mês ainda não acabou — você é referência aqui!"),
-    ("{nome}, {dia} e já com a meta no bolso! {vagas} vagas, {percentual}%. "
-     "No mês você já acumula {vagas_mes} vagas.\n"
-     "Esse é o padrão que inspira o time todo — parabéns!"),
+# ─────────────────────────────────────────────────────────────────────────────
+# Pools de fallback (usados quando a IA não está disponível)
+# Organização: dia × tipo  →  6 pools distintos
+#
+#   QUARTA — incentivo + análise de ritmo + projeção até sexta
+#   SEXTA  — conclusão da semana + bom descanso
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── QUARTA ────────────────────────────────────────────────────────────────────
+
+_QUARTA_ELOGIO_TOP = [
+    ("É {dia} e a meta já está batida, {nome}! {vagas} vagas — {percentual}% — e ainda sobram dois dias.\n"
+     "Aproveita esse ritmo e vê até onde você chega. O time todo tá olhando!"),
+    ("{nome}, {vagas} vagas na {dia} e a meta no bolso! {extra}Ritmo excelente — a semana tá sendo sua.\n"
+     "Com dois dias ainda pela frente, até onde você consegue ir? Continua assim!"),
+    ("Que ritmo, {nome}! Meta batida já na {dia}: {vagas} vagas, {percentual}%.\n"
+     "No mês você já acumula {vagas_mes} vagas. Dois dias ainda pela frente — bora empilhar mais?"),
 ]
 
-_POOL_ELOGIO = [
-    ("{nome}, lindo dia hoje hein — além de morarmos na cidade maravilhosa, "
-     "é {dia} e você já fechou {vagas} vagas. {percentual}% da meta, {diff_semana} na comparação com a semana passada.\n"
-     "Faltam só {faltam} pra bater — você vem brilhando cada dia mais!"),
-    ("É {dia} e você está com {vagas} vagas, {percentual}% da meta. "
-     "A projeção aponta para {projecao} no fim da semana — tá indo muito bem!\n"
-     "Bora fechar esses últimos {faltam} — você tá perto demais pra parar agora."),
-    ("{nome}, {vagas} vagas essa semana e {vagas_mes} no mês — isso tá bonito demais! "
-     "{diff_semana} comparado com a semana passada.\n"
-     "Com esse ritmo, a meta vem antes do fim do dia — vai com tudo!"),
+_QUARTA_ELOGIO = [
+    ("É {dia} e você está com {vagas} vagas — {percentual}% da meta. Bom ritmo!\n"
+     "A projeção aponta para {projecao} vagas até sexta. Faltam {faltam} pra bater — dá mais que tempo, vai com tudo!"),
+    ("{nome}, {vagas} vagas nessa {dia} — você tá bem encaminhado!\n"
+     "Se manter esse passo, a projeção é de {projecao} até sexta. Os {faltam} que faltam estão ao alcance."),
+    ("Lindo ritmo, {nome}! {vagas} vagas até a {dia}, {percentual}% da meta.\n"
+     "A projeção é {projecao} no fechamento da semana — {faltam} vagas pra meta. Tá perto demais pra parar agora."),
 ]
 
-_POOL_MOTIVACAO_QUARTA = [
-    ("{nome}, lindo dia hoje hein — é {dia} e você já fechou {vagas} vagas. "
-     "{percentual}% da meta — a semana ainda não acabou!\n"
-     "A projeção aponta para {projecao} vagas no fim da semana. Dá tempo de virar esse jogo — vai com tudo!"),
-    ("É {dia}, {nome}, e você está com {vagas} vagas. {diff_semana} em relação à semana passada. "
-     "Ainda dá pra chegar lá!\n"
-     "No mês você acumula {vagas_mes} vagas — o ritmo tá lá, é só manter o foco nos próximos dias."),
-    ("{nome}, {vagas} vagas até agora nessa semana. A projeção é de {projecao} no fechamento. "
-     "Você esteve {diff_semana} semana passada — esse potencial ainda está aqui!\n"
-     "Bora dar a volta por cima — o melhor de você ainda está por vir."),
+_QUARTA_MOTIVACAO = [
+    ("{nome}, é {dia} e você está com {vagas} vagas. A projeção aponta para {projecao} até sexta.\n"
+     "Ainda dá pra virar — quinta e sexta são seus. Foco total e vai nessa!"),
+    ("É {dia}, {nome}. {vagas} vagas até agora, e o melhor ainda está por vir.\n"
+     "Com o ritmo certo nesses dois dias, a projeção pode chegar a {projecao}. O jogo ainda está aberto!"),
+    ("{nome}, {vagas} vagas na {dia} e dois dias inteiros pela frente.\n"
+     "Projeção de {projecao} até sexta se você acelerar agora. Dois dias, foco total — bora!"),
 ]
 
-_POOL_MOTIVACAO_SEXTA = [
-    ("{nome}, lindo dia hoje hein — é {dia} e você fechou {vagas} vagas essa semana. "
-     "{percentual}% da meta. {diff_semana} em relação à semana passada.\n"
-     "Descansa esse final de semana com tudo — semana que vem você vai arrasar!"),
-    ("É {dia}, {nome}! {vagas} vagas no bolso essa semana, {vagas_mes} no mês. "
-     "{diff_semana} comparando com a semana passada.\n"
-     "Mereceu descansar — segunda-feira a gente vem com tudo para fechar ainda mais!"),
-    ("{nome}, semana encerrada com {vagas} vagas e {vagas_mes} no mês — bom trabalho! "
-     "{diff_semana} em relação à semana passada.\n"
-     "Aproveita o descanso — semana que vem a história vai ser diferente!"),
+# ── SEXTA ─────────────────────────────────────────────────────────────────────
+
+_SEXTA_ELOGIO_TOP = [
+    ("Que semana, {nome}! Meta batida e encerrada com {vagas} vagas — {percentual}%, {diff_semana} em relação à semana passada.\n"
+     "Você merece descansar esse final de semana. Segunda-feira a gente começa do zero — e você já sabe o nível!"),
+    ("{nome}, semana incrível: {vagas} vagas, meta batida, {extra}e ainda {diff_semana} comparado à semana passada.\n"
+     "No mês você acumula {vagas_mes}. Aproveita o descanso — semana que vem o bar vai ser ainda mais alto!"),
+    ("É {dia} e a semana foi sua, {nome}! {vagas} vagas fechadas, {percentual}% da meta.\n"
+     "Esse é o padrão. Descansa com merecimento — semana que vem a gente mantém esse nível!"),
 ]
+
+_SEXTA_ELOGIO = [
+    ("{nome}, semana encerrada com {vagas} vagas — {percentual}% da meta, {diff_semana} na comparação com a semana passada.\n"
+     "Foi uma boa semana! Descansa bem — segunda-feira a gente vem pra bater a meta completa."),
+    ("É {dia}, {nome}! {vagas} vagas no bolso essa semana, {vagas_mes} no mês. {diff_semana} em relação à semana passada.\n"
+     "Chegou perto — semana que vem você fecha. Bom descanso!"),
+    ("{nome}, semana de {vagas} vagas e bom ritmo — {diff_semana} comparado à semana passada.\n"
+     "Aproveita o final de semana para recarregar. Na próxima, a meta vem!"),
+]
+
+_SEXTA_MOTIVACAO = [
+    ("{nome}, semana encerrada com {vagas} vagas — {percentual}% da meta. {diff_semana} em relação à semana passada.\n"
+     "Descansa esse final de semana com tudo. Segunda começa do zero e a próxima semana vai ser diferente!"),
+    ("É {dia}, {nome}. {vagas} vagas essa semana, {vagas_mes} no mês. {diff_semana} na comparação com a semana passada.\n"
+     "Merece descansar — segunda-feira a gente retoma com tudo e vira o jogo."),
+    ("{nome}, semana encerrada. {vagas} vagas, {diff_semana} em relação à semana passada.\n"
+     "Aproveita o descanso — a próxima semana é uma nova largada. Semana que vem a história vai ser outra!"),
+]
+
+# ── Roteador de pools ──────────────────────────────────────────────────────────
+_POOLS = {
+    (False, "elogio_top"): _QUARTA_ELOGIO_TOP,
+    (False, "elogio"):     _QUARTA_ELOGIO,
+    (False, "motivacao"):  _QUARTA_MOTIVACAO,
+    (True,  "elogio_top"): _SEXTA_ELOGIO_TOP,
+    (True,  "elogio"):     _SEXTA_ELOGIO,
+    (True,  "motivacao"):  _SEXTA_MOTIVACAO,
+}
 
 
 def _formatar_diff(vagas_atual: int, vagas_anterior: int) -> str:
@@ -329,22 +356,41 @@ def _build_html(paragrafos: str, tabela: str) -> str:
 </html>"""
 
 
+# ── Subjects por dia × tipo ────────────────────────────────────────────────────
+_SUBJECTS = {
+    (False, "elogio_top"): "{nome}, META BATIDA na quarta! Ritmo incrível!",
+    (False, "elogio"):     "{nome}, você tá voando essa semana!",
+    (False, "motivacao"):  "{nome}, a semana ainda não acabou!",
+    (True,  "elogio_top"): "{nome}, META BATIDA! Que semana incrível!",
+    (True,  "elogio"):     "{nome}, boa semana! Bom descanso!",
+    (True,  "motivacao"):  "{nome}, bom descanso e até segunda!",
+}
+
+
 # ── Templates públicos ─────────────────────────────────────────────────────────
 def render_elogio_top(contexto: dict, texto_ia: str | None = None) -> dict:
-    contexto["subject"] = f"{contexto['primeiro_nome']}, META BATIDA! Você é incrível!"
-    return _montar_template(contexto, _POOL_ELOGIO_TOP, texto_ia)
+    sexta = contexto.get("sexta", False)
+    contexto["subject"] = _SUBJECTS[(sexta, "elogio_top")].replace("{nome}", contexto["primeiro_nome"])
+    return _montar_template(contexto, _POOLS[(sexta, "elogio_top")], texto_ia)
 
 
 def render_elogio(contexto: dict, texto_ia: str | None = None) -> dict:
-    contexto["subject"] = f"{contexto['primeiro_nome']}, você tá voando essa semana!"
-    return _montar_template(contexto, _POOL_ELOGIO, texto_ia)
+    sexta = contexto.get("sexta", False)
+    contexto["subject"] = _SUBJECTS[(sexta, "elogio")].replace("{nome}", contexto["primeiro_nome"])
+    return _montar_template(contexto, _POOLS[(sexta, "elogio")], texto_ia)
 
 
 def render_motivacao(contexto: dict, texto_ia: str | None = None) -> dict:
     sexta = contexto.get("sexta", False)
+    contexto["subject"] = _SUBJECTS[(sexta, "motivacao")].replace("{nome}", contexto["primeiro_nome"])
+    return _montar_template(contexto, _POOLS[(sexta, "motivacao")], texto_ia)
+
+
+def _render_motivacao_legado(contexto: dict, texto_ia: str | None = None) -> dict:
+    sexta = contexto.get("sexta", False)
     if sexta:
         contexto["subject"] = f"{contexto['primeiro_nome']}, bom descanso e até segunda!"
-        return _montar_template(contexto, _POOL_MOTIVACAO_SEXTA, texto_ia)
+        return _montar_template(contexto, _SEXTA_MOTIVACAO, texto_ia)
     else:
         contexto["subject"] = f"{contexto['primeiro_nome']}, a semana ainda não acabou!"
-        return _montar_template(contexto, _POOL_MOTIVACAO_QUARTA, texto_ia)
+        return _montar_template(contexto, _QUARTA_MOTIVACAO, texto_ia)

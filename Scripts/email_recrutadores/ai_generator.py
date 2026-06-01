@@ -14,14 +14,33 @@ MODEL = "claude-haiku-4-5-20251001"
 
 
 def _instrucao_tipo(tipo: str, sexta: bool, faltam: int) -> str:
-    if tipo == "elogio_top":
-        return "Celebre com entusiasmo o feito de bater ou superar a meta. Seja caloroso e genuíno."
-    if tipo == "elogio":
-        faltam_txt = f"Mencione que faltam {faltam} {'vaga' if faltam == 1 else 'vagas'} para bater a meta e que dá tempo."
-        return f"Elogie a boa performance. {faltam_txt}"
     if sexta:
-        return "É sexta-feira. Parabenize pela semana, deseje bom descanso e projete uma semana ainda melhor."
-    return "É quarta-feira. Motive para os próximos dias. Destaque que ainda há tempo para virar o jogo."
+        # Sexta: conclusao da semana util + bom descanso
+        # A semana JA ACABOU — nunca diga que ainda da tempo nessa semana
+        base = ("E sexta-feira — a semana util acabou. "
+                "Faca a conclusao da semana: como foi o desempenho, o que se destacou. "
+                "Termine desejando um bom descanso no final de semana e projete energia positiva para a proxima semana. "
+                "NAO sugira fechar mais vagas nessa semana. NAO mencione segunda como continuacao desta semana.")
+        if tipo == "elogio_top":
+            return base + " Tom: muito celebrativo — meta batida, semana excelente."
+        if tipo == "elogio":
+            return base + f" Tom: positivo — boa semana, quase bateu a meta, proxima semana chega la."
+        return base + " Tom: encorajador — semana desafiadora, mas reconheca o esforco e projete melhora."
+    else:
+        # Quarta: incentivo + ritmo atual + projecao
+        # NUNCA mencionar queda, comparacao negativa ou cobranca — so incentivo
+        base = ("E quarta-feira — metade da semana. "
+                "Foque no momento atual e no que ainda e possivel: use a projecao para mostrar o potencial ate sexta. "
+                "Termine com incentivo forte — ainda ha 2 dias uteis. "
+                "PROIBIDO: nunca mencione queda de ritmo, comparacao negativa com semana passada, "
+                "nem qualquer frase que soe como cobranca ou critica velada. "
+                "Se a tendencia for negativa, simplesmente ignore esse dado e foque no presente.")
+        if tipo == "elogio_top":
+            return base + " Tom: celebrativo e desafiador — meta ja batida na quarta, incentive a ir ainda mais longe."
+        if tipo == "elogio":
+            faltam_txt = f"Destaque que faltam apenas {faltam} {'vaga' if faltam == 1 else 'vagas'} para bater a meta ate sexta."
+            return base + f" Tom: animado e confiante. {faltam_txt}"
+        return base + " Tom: motivacional puro — acredite na virada, destaque o que ainda e possivel."
 
 
 def gerar_texto(api_key: str, contexto: dict) -> str | None:
@@ -67,24 +86,29 @@ def gerar_texto(api_key: str, contexto: dict) -> str | None:
 
     instrucao = _instrucao_tipo(tipo, sexta, faltam)
 
-    prompt = f"""Você escreve mensagens de performance para recrutadores da Raíz Educação.
+    projecao_linha = (
+        "" if sexta
+        else f"- Projecao para sexta-feira (fim da semana util): {projecao} vagas\n"
+    )
 
-Tom: caloroso, direto, colega próximo. Português BR informal mas profissional. Sem emojis.
-Tamanho: exatamente 2 parágrafos curtos (3-4 linhas cada). Sem saudação, sem assinatura.
+    prompt = f"""Voce escreve mensagens de performance para recrutadores da Raiz Educacao.
+
+Tom: caloroso, direto, colega proximo. Portugues BR informal mas profissional. Sem emojis.
+Tamanho: exatamente 2 paragrafos curtos (3-4 linhas cada). Sem saudacao, sem assinatura.
+IMPORTANTE: "semana" significa apenas dias uteis (segunda a sexta). Nunca mencione sabado, domingo ou fim de semana como dias de trabalho.
 
 Dados:
 - Nome: {nome}
 - Dia: {dia}
-- Vagas na semana: {vagas} de {meta} ({percentual}%)
+- Vagas fechadas na semana util (seg-sex): {vagas} de {meta} ({percentual}%)
 - Semana passada: {vagas_ant} vagas ({tendencia_txt})
-- Projeção fim da semana: {projecao} vagas
-- {ultima_txt}
-- Total no mês: {vagas_mes} vagas
+{projecao_linha}- {ultima_txt}
+- Total no mes: {vagas_mes} vagas
 - Tipo: {tipo}
 
-Instrução: {instrucao}
+Instrucao: {instrucao}
 
-Mencione naturalmente o dia da semana, as vagas fechadas e{' a última vaga específica.' if ultima_vaga else ' o total do mês.'}
+Mencione naturalmente o dia da semana, as vagas fechadas e{' a ultima vaga especifica.' if ultima_vaga else ' o total do mes.'}
 Escreva apenas o corpo do e-mail:"""
 
     payload = json.dumps({
