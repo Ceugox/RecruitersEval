@@ -1,0 +1,29 @@
+# O portao do repo, em push na main e em pull request.
+#
+# O que este repo tem em producao e o `email_recrutadores.yml`, que roda por
+# cron duas vezes por semana e dispara e-mail de verdade. Ate hoje nada
+# conferia esse codigo antes de ele rodar sozinho numa quarta de manha: um
+# erro de sintaxe so aparecia no envio que nao aconteceu.
+#
+# A versao do Python e a mesma que o `email_recrutadores.yml` usa. Se mudar
+# la, muda aqui.
+#
+# Este repo nao tem suite de teste nem `requirements.txt`. O portao compila os
+# scripts, o que pega erro de sintaxe, e nao pega import quebrado nem erro de
+# comportamento. Quando existir suite, ela entra aqui.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m compileall -q Scripts
